@@ -1,0 +1,208 @@
+:root {
+    --mdc-theme-primary: #377cf5;
+    --mdc-theme-primary-light: #86b5ff;
+    --mdc-theme-primary-dark: #0040ad;
+    --mdc-theme-secondary: #11c44c;
+    --mdc-theme-secondary-light: #59ff8b;
+    --mdc-theme-secondary-dark: #027c29;
+    --mdc-theme-background: #141517;
+    --menu-height: 40px;
+    --chat-input-height: 35px;
+    --footer-height: 20px;
+    --chat-panel-ratio: 34%;
+    --rooms-panel-ratio: 50%;
+    --panel-margin: 10px;
+    --panel-padding: 20px;
+    --panel-color: rgba(255, 255, 255, 0.015);
+    --dark-theme-text: rgba(255, 255, 255, 0.8);
+    --light-theme-text: rgba(0, 0, 0, 0.8);
+}
+
+* {
+    color: var(--light-theme-text);
+}
+
+.mdc-theme--dark * {
+    color: var(--dark-theme-text);
+}
+
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    cursor: default;
+    font-family: Roboto;
+    padding: 0px;
+    margin: 0px;
+}
+
+html,
+body {
+    background-color: var(--mdc-theme-background);
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+.prompt {
+    position: fixed;
+    z-index: 2;
+}
+
+.prompt .mdc-text-field {
+    width: 100%;
+}
+
+.prompt .mdc-text-field input {
+    cursor: text;
+}
+
+.menu {
+    position: fixed;
+    width: 100%;
+    height: var(--menu-height);
+    top: 0;
+    background-color: var(--panel-color);
+}
+
+.menu button {
+    padding: 2px 20px;
+    margin: 2px;
+}
+
+.mdc-button i {
+    pointer-events: none;
+}
+
+.dark-theme-switch {
+    display: inline;
+    position: absolute;
+    right: 16px;
+    vertical-align: middle;
+    line-height: var(--menu-height);
+}
+
+.dark-theme-switch .mdc-switch {
+    top: 2px;
+    margin-left: 8px;
+}
+
+.main {
+    position: fixed;
+    top: var(--menu-height);
+    width: 100%;
+    height: calc(100% - var(--menu-height) - var(--footer-height));
+}
+
+.main-inner {
+    position: relative;
+    width: 100%;
+    height: calc(100% - var(--chat-input-height));
+}
+
+.main-inner .mdc-card {
+    background-color: var(--panel-color);
+}
+
+.voip-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - var(--chat-panel-ratio));
+}
+
+.rooms-panel {
+    position: relative;
+    height: calc(100% - var(--panel-margin) * 1.5);
+    width: calc(var(--rooms-panel-ratio) - var(--panel-margin) * 1.5);
+    margin: var(--panel-margin);
+    margin-right: calc(var(--panel-margin) / 2 - 4px);
+    margin-bottom: calc(var(--panel-margin) / 2);
+    display: inline-block;
+    padding: var(--panel-padding);
+}
+
+.rooms-panel li {
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+.rooms-panel .speak-bubble {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: #b5cef9;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+    margin-right: 10px;
+}
+
+.rooms-panel .speak-bubble[active] {
+    background: #3167c4;
+    box-shadow: 0px 0px 15px 0px rgba(49, 103, 196, 0.5);
+}
+
+.rooms-panel .speak-name {
+    vertical-align: middle;
+}
+
+.info-panel {
+    display: inline-block;
+    position: relative;
+    height: calc(100% - var(--panel-margin) * 1.5);
+    width: calc(100% - var(--rooms-panel-ratio) - var(--panel-margin) * 1.5);
+    margin: var(--panel-margin);
+    margin-left: calc(var(--panel-margin) / 2);
+    margin-bottom: calc(var(--panel-margin) / 2);
+}
+
+.chat-panel {
+    position: relative;
+    width: calc(100% - var(--panel-margin) * 2);
+    margin: var(--panel-margin);
+    margin-top: calc(var(--panel-margin) / 2);
+    height: calc(var(--chat-panel-ratio) - var(--panel-margin) * 1.5);
+}
+
+.chat-input {
+    position: relative;
+    width: 100%;
+    height: var(--chat-input-height);
+}
+
+.chat-input .mdc-text-field {
+    width: calc(100% - var(--panel-margin) * 2);
+    font-size: 14px;
+    height: var(--chat-input-height);
+    margin-left: var(--panel-margin);
+}
+
+.mdc-theme--dark .chat-input .mdc-text-field {
+    background-color: var(--panel-color)
+}
+
+.chat-input .mdc-text-field input {
+    cursor: text;
+    width: 100%;
+}
+
+.chat-input .mdc-text-field .fa {
+    cursor: pointer;
+    font-size: 16px;
+    pointer-events: all;
+    height: var(--chat-input-height);
+    line-height: var(--chat-input-height);
+    top: 3%;
+    vertical-align: middle;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: var(--footer-height);
+    /* background: blue; */
+}

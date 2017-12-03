@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="mdc-theme--dark">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TeamSpeak 4</title>
+    <link rel="stylesheet" href="../../node_modules/material-components-web/dist/material-components-web.css">
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="../../node_modules/material-components-web/dist/material-components-web.js"></script>
+    <script src="lib/RTCConnection/socket.io.js"></script>
+    <script src="lib/RTCConnection/simplepeer.min.js"></script>
+    <script src="lib/RTCConnection/RTCConnection.js"></script>
+    <script src="lib/RTCConnection/SignalServer.js"></script>
+    <script src="js/TeamSpeak.js"></script>
+    <script src="js/User.js"></script>
+    <script src="js/Store.js"></script>
+    <script src="js/Settings.js"></script>
+    <script src="js/Dialog.js"></script>
+    <script src="js/script.js"></script>
+</head>
+
+<body>
+    <aside class="mdc-dialog prompt">
+        <div class="mdc-dialog__surface">
+            <header class="mdc-dialog__header">
+                <h2 class="mdc-dialog__header__title">
+                </h2>
+            </header>
+            <section class="mdc-dialog__body">
+                <div class="mdc-text-field">
+                    <input type="text" class="mdc-text-field__input">
+                    <div class="mdc-text-field__bottom-line"></div>
+                </div>
+            </section>
+            <footer class="mdc-dialog__footer">
+                <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
+                <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Ok</button>
+            </footer>
+        </div>
+        <div class="mdc-dialog__backdrop"></div>
+    </aside>
+    <div class="menu mdc-elevation--z1">
+        <button title="Connect to server" onclick="connect()" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+            <i class="fa fa-plug"></i>
+        </button>
+        <button title="Preferences" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+            <i class="fa fa-cog"></i>
+        </button>
+        <button icon-toggle title="Toggle mute speakers" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+            <i class="fa fa-volume-up"></i>
+            <i active class="fa fa-volume-off"></i>
+        </button>
+        <button icon-toggle title="Toggle mute microphone" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+            <i class="fa fa-microphone"></i>
+            <i active class="fa fa-microphone-slash"></i>
+        </button>
+        <div class="dark-theme-switch">
+            <label for="dark-theme-switch" class="mdc-switch-label">Dark theme</label>
+            <div class="mdc-switch">
+                <input type="checkbox" checked onchange="Settings.toggleDarkTheme(event)" id="dark-theme-switch" class="mdc-switch__native-control"
+                />
+                <div class="mdc-switch__background">
+                    <div class="mdc-switch__knob"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="main-inner">
+            <div class="voip-container">
+                <div class="mdc-card rooms-panel">
+                    <ul class="user-list">
+                    </ul>
+                </div>
+                <div class="mdc-card info-panel">
+                    <section class="mdc-card__primary">
+                        <h1 class="mdc-card__title mdc-card__title--large">Title goes here</h1>
+                        <h2 class="mdc-card__subtitle">Subtitle here</h2>
+                    </section>
+                    <section class="mdc-card__actions">
+                        <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 1</button>
+                        <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 2</button>
+                    </section>
+                </div>
+            </div>
+            <div class="mdc-card chat-panel">
+                <section class="mdc-card__primary">
+                    <h1 class="mdc-card__title mdc-card__title--large">Title goes here</h1>
+                    <h2 class="mdc-card__subtitle">Subtitle here</h2>
+                </section>
+                <section class="mdc-card__actions">
+                    <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 1</button>
+                    <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 2</button>
+                </section>
+            </div>
+        </div>
+        <div class="chat-input">
+            <div class="mdc-text-field mdc-text-field--box mdc-text-field--with-trailing-icon" data-mdc-auto-init="MDCRipple">
+                <input placeholder="Write a message..." type="text" id="chat-text-field" class="mdc-text-field__input">
+                <i class="fa fa-smile-o mdc-text-field__icon"></i>
+                <div class="mdc-text-field__bottom-line"></div>
+            </div>
+        </div>
+    </div>
+    <div class="footer"></div>
+</body>
+
+</html>
