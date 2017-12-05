@@ -14,7 +14,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 900,
-        icon: path.join(__dirname, '../renderer/img/favicon.png'),
+        icon: path.join(__dirname, '../assets/favicon.png'),
         titleBarStyle: 'hidden',
         backgroundColor: '#141517',
         minWidth: 300,

@@ -24,7 +24,7 @@
     "forge": {
       "make_targets": {
         "win32": [
-          "squirrel"
+          "appx"
         ],
         "darwin": [
           "zip"
@@ -41,7 +41,7 @@
         "name": "groupvoice4",
         "iconUrl": "https://www.ruurdbijlsma.com/portfolio/img/favicon.ico",
         "setupIcon": "./src/renderer/img/favicon.ico",
-        "noMsi": false
+        "noMsi": true
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -50,8 +50,11 @@
         "name": "GroupVoice4"
       },
       "windowsStoreConfig": {
-        "packageName": "",
-        "name": "groupvoice4"
+        "packageName": "GroupVoice4",
+        "name": "groupvoice4",
+        "packageVersion": "1.0.0.0",
+        "packageDisplayName": "Group Voice 4",
+        "packageDescription": "Group voice chat"
       }
     }
   },
