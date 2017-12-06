@@ -21,6 +21,12 @@
 </head>
 
 <body>
+    <div class="mdc-snackbar snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+        <div class="mdc-snackbar__text"></div>
+        <div class="mdc-snackbar__action-wrapper">
+            <button type="button" class="mdc-snackbar__action-button"></button>
+        </div>
+    </div>
     <aside class="mdc-dialog prompt">
         <div class="mdc-dialog__surface">
             <header class="mdc-dialog__header">
@@ -85,19 +91,11 @@
                 </div>
             </div>
             <div class="mdc-card chat-panel">
-                <section class="mdc-card__primary">
-                    <h1 class="mdc-card__title mdc-card__title--large">Title goes here</h1>
-                    <h2 class="mdc-card__subtitle">Subtitle here</h2>
-                </section>
-                <section class="mdc-card__actions">
-                    <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 1</button>
-                    <button class="mdc-button mdc-button--theme-dark mdc-button--compact mdc-card__action">Action 2</button>
-                </section>
             </div>
         </div>
         <div class="chat-input">
             <div class="mdc-text-field mdc-text-field--box mdc-text-field--with-trailing-icon" data-mdc-auto-init="MDCRipple">
-                <input placeholder="Write a message..." type="text" id="chat-text-field" class="mdc-text-field__input">
+                <input onkeypress="checkSendMessage(event)" placeholder="Write a message..." type="text" id="chat-text-field" class="mdc-text-field__input">
                 <i class="fa fa-smile-o mdc-text-field__icon"></i>
                 <div class="mdc-text-field__bottom-line"></div>
             </div>

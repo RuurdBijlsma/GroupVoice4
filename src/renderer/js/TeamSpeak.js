@@ -3,6 +3,7 @@ class TeamSpeak {
         this.ip = ip;
         this.room = room;
         this.username = username;
+        this.events = {};
 
         this.userList = document.querySelector('.user-list');
         this.users = [];
@@ -13,7 +14,7 @@ class TeamSpeak {
     async initializeConnection() {
         let stream = await this.getAudioStream();
 
-        this.connection = new RTCConnection(this.room, this.ip, { stream: stream });
+        this.connection = new RTCConnection(this.room, this.ip, stream ? { stream: stream } : {});
 
         let sayAllowed = false;
         setTimeout(() => {
@@ -47,9 +48,9 @@ class TeamSpeak {
             this.users.splice(userIndex, 1);
             this.updateUserList();
         });
-        this.connection.on('message', (data, peer) => {
-            let message = JSON.parse(data);
-            console.log(`Received message ${getUser(peer._id).name}:${message}`);
+        this.connection.on('message', (message, peer) => {
+            let username = this.getUser(peer._id).name;
+            this.emit('message', username, message);
         });
         this.connection.on('username', (name, peer) => {
             console.log('user ' + name + ' joined room');
@@ -67,11 +68,16 @@ class TeamSpeak {
         });
     }
 
+    async sendMessage(message) {
+        this.connection.broadcast('message', message);
+    }
+
     async getAudioStream() {
         try {
             return navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         } catch (e) {
             console.log("Could not get microphone access", e);
+            return false;
         }
     }
 
@@ -169,6 +175,29 @@ class TeamSpeak {
             li.appendChild(a);
             user.bubbleElement = div;
             this.userList.appendChild(li);
+        }
+    }
+
+    emit(eventName, ...args) {
+        if (this.events.hasOwnProperty(eventName)) {
+            for (let callback of this.events[eventName]) {
+                callback(...args);
+            }
+        }
+    }
+
+    on(eventName, callback) {
+        if (!this.events.hasOwnProperty(eventName)) {
+            this.events[eventName] = [];
+        }
+        this.events[eventName].push(callback);
+    }
+
+    off(eventName, callback) {
+        if (this.events.hasOwnProperty(eventName)) {
+            this.events[eventName].remove(callback);
+        } else {
+            console.warn("This event does not exist");
         }
     }
 }

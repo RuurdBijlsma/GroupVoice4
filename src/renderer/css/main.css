@@ -59,6 +59,10 @@ body {
     cursor: text;
 }
 
+.snackbar{
+    z-index: 5;
+}
+
 .menu {
     position: fixed;
     width: 100%;

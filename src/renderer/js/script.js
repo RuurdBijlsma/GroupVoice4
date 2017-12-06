@@ -18,7 +18,7 @@ async function init() {
     initializeIconToggles();
     await Store.initialize();
     Settings.initialize();
-    Dialog.initialize(document.querySelector('.prompt'));
+    Dialog.initialize(document.querySelector('.prompt'), document.querySelector('.snackbar'));
 
     document.addEventListener('keypress', e => {
         if (e.key === '-')
@@ -35,6 +35,30 @@ async function connect() {
     Store.settings.username = username;
 
     window.teamSpeak = new TeamSpeak(ip, room, username);
+
+    window.teamSpeak.on("message", (username, message) => showMessage(username, message));
+}
+
+async function checkSendMessage(e) {
+    if (e.key === 'Enter') {
+        if (window.teamSpeak === undefined) {
+            Dialog.snackbar('You are not yet connected to a server', 'Connect').then(() => connect());
+        } else {
+            let message = e.target.value;
+            e.target.value = '';
+            window.teamSpeak.sendMessage(message);
+            showMessage(window.teamSpeak.username, message, false);
+        }
+    }
+}
+
+function showMessage(username, message, left = true) {
+    let chatPanel = document.querySelector('.chat-panel');
+    chatPanel.innerHTML += `
+        <p class='${left ? 'left' : 'right'}'>
+            <a class='bold'>${username}:</a>  ${message}
+        </p>
+    `;
 }
 
 function initializeIconToggles() {

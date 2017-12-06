@@ -7,7 +7,7 @@ class Dialog {
         this._hasInitialized = value;
     }
 
-    static initialize(dialogElement) {
+    static initialize(dialogElement, snackElement) {
         this.dialogElement = dialogElement;
         this.dialog = new mdc.dialog.MDCDialog(dialogElement);
         this.title = dialogElement.querySelector('.mdc-dialog__header__title');
@@ -21,6 +21,21 @@ class Dialog {
         });
         this.dialog.listen('MDCDialog:cancel', () => {
             this.onCancel();
+        });
+
+        this.snack = mdc.snackbar.MDCSnackbar.attachTo(snackElement);
+        this.showingSnack=false;
+    }
+
+    static async snackbar(message, actionText = 'ok', time = 5000) {
+        if(this.showingSnack){}
+        return new Promise(resolve => {
+            this.snack.show({
+                message: message,
+                timeout: 5000,
+                actionHandler: () => resolve(),
+                actionText: actionText
+            });
         });
     }
 
