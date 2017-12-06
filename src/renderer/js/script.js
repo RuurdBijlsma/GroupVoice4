@@ -19,6 +19,11 @@ async function init() {
     await Store.initialize();
     Settings.initialize();
     Dialog.initialize(document.querySelector('.prompt'));
+
+    document.addEventListener('keypress', e => {
+        if (e.key === '-')
+            mainWindow.webContents.toggleDevTools();
+    });
 }
 
 async function connect() {

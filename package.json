@@ -7,11 +7,9 @@
   "homepage": "https://github.com/ruurdbijlsma/groupvoice4",
   "repository": "https://github.com/ruurdbijlsma/groupvoice4",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint src --color"
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/favicon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . groupvoice4 --overwrite --asar=true --platform=win32 --arch=x64 --icon=src/assets/favicon.ico --prune=true --out=release-builds --version-string.ProductName=\"GroupVoice4\"",    
+    "package-linux": "electron-packager . groupvoice4 --overwrite --asar=true --platform=linux --arch=x64 --icon=src/assets/favicon.png --prune=true --out=release-builds"
   },
   "keywords": [],
   "author": {
@@ -20,62 +18,13 @@
     "url": "https://www.ruurdbijlsma.com/"
   },
   "license": "MIT",
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "appx"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "npm"
-      },
-      "electronWinstallerConfig": {
-        "name": "groupvoice4",
-        "iconUrl": "https://www.ruurdbijlsma.com/portfolio/img/favicon.ico",
-        "setupIcon": "./src/renderer/img/favicon.ico",
-        "noMsi": true
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "RuurdBijlsma",
-        "name": "GroupVoice4"
-      },
-      "windowsStoreConfig": {
-        "packageName": "GroupVoice4",
-        "name": "groupvoice4",
-        "packageVersion": "1.0.0.0",
-        "packageDisplayName": "Group Voice 4",
-        "packageDescription": "Group voice chat"
-      }
-    }
-  },
   "dependencies": {
-    "electron-compile": "^6.4.2",
     "electron-is-dev": "^0.3.0",
-    "electron-squirrel-startup": "^1.0.0",
     "material-components-web": "^0.26.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
+    "electron": "^1.4.3",
     "devtron": "^1.4.0",
-    "dotenv": "^4.0.0",
-    "electron-forge": "^4.1.5",
-    "electron-prebuilt-compile": "1.7.9",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.5.1"
+    "electron-packager": "^10.1.0"
   }
 }

@@ -1,6 +1,6 @@
 class Settings {
     static initialize() {
-        let theme = Store.settings.theme || 'light';
+        let theme = Store.settings.theme || 'dark';
         let input = document.querySelector('.dark-theme-switch .mdc-switch input');
         input.checked = theme === 'dark';
         input.checked ? this.setDarkTheme() : this.setLightTheme();
