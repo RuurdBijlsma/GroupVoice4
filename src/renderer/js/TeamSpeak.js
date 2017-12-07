@@ -11,6 +11,14 @@ class TeamSpeak {
         this.initializeConnection();
     }
 
+    async destroy() {
+        for (let user of this.users) {
+            if (user.interval !== undefined)
+                clearInterval(user.interval);
+        }
+        return this.connection.destroy();
+    }
+
     async initializeConnection() {
         let stream = await this.getAudioStream();
 
@@ -29,6 +37,7 @@ class TeamSpeak {
             this.updateUserList();
             this.say('Connected!');
             console.log("Connected to signal server");
+            this.emit('connect');
         });
         this.connection.on('signalServerDisconnect', () => {
             this.say('Disconnected');

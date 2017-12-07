@@ -4,7 +4,7 @@ const utils = electron.require(path.resolve(__dirname, '../node/utils.js'));
 const app = electron.app;
 const mainWindow = electron.getCurrentWindow();
 
-//todo: chat maken ez mode
+//todo: 
 //iets met de rechts panel, canvas met audio grafiekje is wel leuk idk
 //mute speakers
 //mute microphone
@@ -19,6 +19,7 @@ async function init() {
     await Store.initialize();
     Settings.initialize();
     Dialog.initialize(document.querySelector('.prompt'), document.querySelector('.snackbar'));
+    ChatPanel.initialize(document.querySelector('.chat-panel'));
 
     document.addEventListener('keypress', e => {
         if (e.key === '-')
@@ -34,31 +35,67 @@ async function connect() {
     let username = await Dialog.prompt('Username', Store.settings.username || utils.getUsername());
     Store.settings.username = username;
 
-    window.teamSpeak = new TeamSpeak(ip, room, username);
+    createTeamSpeak(ip, room, username);
+}
 
-    window.teamSpeak.on("message", (username, message) => showMessage(username, message));
+async function quickConnect() {
+    let ip = Store.settings.ip || await Dialog.prompt('Server IP', 'https://rtc.ruurdbijlsma.com');
+    Store.settings.ip = ip;
+    let room = Store.settings.room || await Dialog.prompt('Room', 'default');
+    Store.settings.room = room;
+    let username = Store.settings.username || await Dialog.prompt('Username', utils.getUsername());
+    Store.settings.username = username;
+
+    createTeamSpeak(ip, room, username);
+}
+
+function createTeamSpeak(ip, room, username) {
+    let ts = new TeamSpeak(ip, room, username);
+
+    ts.on("message", (username, message) => ChatPanel.showMessage(username, message));
+    ts.on("connect", () => onConnect());
+    ts.on("disconnect", () => onDisconnect());
+
+    window.ts = ts;
+}
+
+function onConnect() {
+    let disconnectButton = document.querySelector('.disconnect-button');
+    let connectButton = document.querySelector('.connect-button');
+    let quickConnectButton = document.querySelector('.quick-connect-button');
+    connectButton.style.display = 'none';
+    quickConnectButton.style.display = 'none';
+    disconnectButton.style.display = 'inline-block';
+}
+
+function onDisconnect() {
+    ts.destroy();
+
+    let disconnectButton = document.querySelector('.disconnect-button');
+    let connectButton = document.querySelector('.connect-button');
+    let quickConnectButton = document.querySelector('.quick-connect-button');
+    connectButton.style.display = 'inline-block';
+    quickConnectButton.style.display = 'inline-block';
+    disconnectButton.style.display = 'none';
+
+    let userList = document.querySelector('.user-list');
+    while (userList.hasChildNodes())
+        userList.removeChild(userList.lastChild);
+
+    delete window.ts;
 }
 
 async function checkSendMessage(e) {
     if (e.key === 'Enter') {
-        if (window.teamSpeak === undefined) {
+        if (window.ts === undefined) {
             Dialog.snackbar('You are not yet connected to a server', 'Connect').then(() => connect());
         } else {
             let message = e.target.value;
             e.target.value = '';
-            window.teamSpeak.sendMessage(message);
-            showMessage(window.teamSpeak.username, message, false);
+            window.ts.sendMessage(message);
+            ChatPanel.showMessage(window.ts.username, message, false);
         }
     }
-}
-
-function showMessage(username, message, left = true) {
-    let chatPanel = document.querySelector('.chat-panel');
-    chatPanel.innerHTML += `
-        <p class='${left ? 'left' : 'right'}'>
-            <a class='bold'>${username}:</a>  ${message}
-        </p>
-    `;
 }
 
 function initializeIconToggles() {

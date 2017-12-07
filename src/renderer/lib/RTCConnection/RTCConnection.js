@@ -30,6 +30,27 @@ class RTCConnection {
         this.config = config;
     }
 
+    async destroy() {
+        return new Promise(resolve => {
+
+            this.signalServer.socket.close();
+            this.signalServer.socket.destroy();
+            let peerNum = 0;
+            
+            for (let peerId in this.peers) {
+                peerNum++;
+                let peer = this.peers[peerId];
+                peer.destroy(e => {
+                    peerNum--;
+                    if (peerNum === 0) {
+                        resolve();
+                    }
+                });
+            }
+
+        });
+    }
+
     async reconfigureConnection(peerConfig = {}) {
         this.config = peerConfig;
 
@@ -53,7 +74,7 @@ class RTCConnection {
         peer.on('close', () => this.emit('peerDisconnect', peer));
 
         peer.on('data', data => {
-            this.emit('raw',  data, peer);
+            this.emit('raw', data, peer);
 
             // data example: "5,click,buffer"
             // 5 is length of event name "click"
