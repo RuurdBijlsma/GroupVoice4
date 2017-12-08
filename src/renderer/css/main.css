@@ -30,19 +30,20 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    -o-user-select: none;
     user-select: none;
     cursor: default;
     font-family: Roboto;
-    padding: 0px;
-    margin: 0px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    margin: 0;
 }
 
 html,
 body {
     background-color: var(--mdc-theme-background);
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     height: 100%;
 }
 
@@ -125,9 +126,7 @@ body {
     position: relative;
     height: calc(100% - var(--panel-margin) * 1.5);
     width: calc(var(--rooms-panel-ratio) - var(--panel-margin) * 1.5);
-    margin: var(--panel-margin);
-    margin-right: calc(var(--panel-margin) / 2 - 4px);
-    margin-bottom: calc(var(--panel-margin) / 2);
+    margin: var(--panel-margin) calc(var(--panel-margin) / 2 - 4px) calc(var(--panel-margin) / 2) var(--panel-margin);
     display: inline-block;
     padding: var(--panel-padding);
 }
@@ -151,7 +150,7 @@ body {
 
 .rooms-panel .speak-bubble[active] {
     background: #3167c4;
-    box-shadow: 0px 0px 15px 0px rgba(49, 103, 196, 0.5);
+    box-shadow: 0 0 15px 0 rgba(49, 103, 196, 0.5);
 }
 
 .rooms-panel .speak-name {
@@ -163,17 +162,14 @@ body {
     position: relative;
     height: calc(100% - var(--panel-margin) * 1.5);
     width: calc(100% - var(--rooms-panel-ratio) - var(--panel-margin) * 1.5);
-    margin: var(--panel-margin);
-    margin-left: calc(var(--panel-margin) / 2);
-    margin-bottom: calc(var(--panel-margin) / 2);
+    margin: var(--panel-margin) var(--panel-margin) calc(var(--panel-margin) / 2) calc(var(--panel-margin) / 2);
 }
 
 .chat-panel {
     overflow-y: auto;
     position: relative;
     width: calc(100% - var(--panel-margin) * 2);
-    margin: var(--panel-margin);
-    margin-top: calc(var(--panel-margin) / 2);
+    margin: calc(var(--panel-margin) / 2) var(--panel-margin) var(--panel-margin);
     height: calc(var(--chat-panel-ratio) - var(--panel-margin) * 1.5);
 }
 
@@ -192,7 +188,7 @@ p.chat-text {
 }
 
 .chat-panel .chat-user {
-    font-weight: light;
+    font-weight: 100;
 }
 
 .chat-panel .right {
@@ -233,7 +229,7 @@ p.chat-text {
 
 .footer {
     position: fixed;
-    bottom: 0px;
+    bottom: 0;
     width: 100%;
     height: var(--footer-height);
     /* background: blue; */

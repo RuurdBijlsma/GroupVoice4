@@ -1,3 +1,4 @@
+git status
 echo 'Commit message:'
 read commitmessage
 
