@@ -48,6 +48,9 @@ class RTCConnection {
                 });
             }
 
+            this.events = {};
+            delete this.signalServer;
+
         });
     }
 

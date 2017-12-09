@@ -27,6 +27,36 @@ async function init() {
     });
 }
 
+function spinIcon(icon) {
+    icon.setAttribute('class', 'fa fa-spinner');
+    icon.style.animationName = 'spin';
+    let button = icon.parentElement;
+    button.title = 'Click to stop connecting';
+}
+
+function stopIconSpin(icon) {
+    let buttonIcons = {
+        'connect-button': {
+            title: 'Connect to server',
+            icon: 'fa fa-plug'
+        },
+        'quick-connect-button': {
+            title: 'Quick connect',
+            icon: 'fa fa-bolt'
+        },
+    }
+    let button = icon.parentElement;
+    button.title = buttonIcons[button.classList[0]].title;
+    icon.style.animationName = null;
+    icon.setAttribute('class', buttonIcons[button.classList[0]].icon);
+}
+
+async function cancelConnect(icon) {
+    onDisconnect();
+
+    stopIconSpin(icon);
+}
+
 async function connect() {
     let ip = await Dialog.prompt('Server IP', Store.settings.ip || 'https://rtc.ruurdbijlsma.com');
     Store.settings.ip = ip;
@@ -35,7 +65,16 @@ async function connect() {
     let username = await Dialog.prompt('Username', Store.settings.username || utils.getUsername());
     Store.settings.username = username;
 
-    createTeamSpeak(ip, room, username);
+    let button = document.querySelector('.connect-button');
+    let icon = button.querySelector('i');
+
+    button.onclick = () => cancelConnect(icon);
+    spinIcon(icon);
+
+    await createTeamSpeak(ip, room, username);
+
+    stopIconSpin(icon);
+    button.onclick = () => quickConnect();
 }
 
 async function quickConnect() {
@@ -46,17 +85,28 @@ async function quickConnect() {
     let username = Store.settings.username || await Dialog.prompt('Username', utils.getUsername());
     Store.settings.username = username;
 
-    createTeamSpeak(ip, room, username);
+    let button = document.querySelector('.quick-connect-button');
+    let icon = button.querySelector('i');
+
+    button.onclick = () => cancelConnect(icon);
+    spinIcon(icon);
+
+    await createTeamSpeak(ip, room, username);
+
+    stopIconSpin(icon);
+    button.onclick = () => quickConnect();
 }
 
 function createTeamSpeak(ip, room, username) {
-    let ts = new TeamSpeak(ip, room, username);
+    return new Promise(resolve => {
+        let ts = new TeamSpeak(ip, room, username);
 
-    ts.on("message", (username, message) => ChatPanel.showMessage(username, message));
-    ts.on("connect", () => onConnect());
-    ts.on("disconnect", () => onDisconnect());
+        ts.on("message", (username, message) => ChatPanel.showMessage(username, message));
+        ts.on("connect", () => { resolve(); onConnect(); });
+        ts.on("disconnect", () => onDisconnect());
 
-    window.ts = ts;
+        window.ts = ts;
+    });
 }
 
 function onConnect() {

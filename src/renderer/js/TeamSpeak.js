@@ -14,9 +14,12 @@ class TeamSpeak {
     async destroy() {
         for (let user of this.users) {
             if (user.interval !== undefined)
-                clearInterval(user.interval);
+                cancelAnimationFrame(user.interval);
         }
-        return this.connection.destroy();
+        this.events = {};
+        this.users = [];
+        this.connection.destroy();
+        this.connection = [];
     }
 
     async initializeConnection() {
@@ -103,6 +106,46 @@ class TeamSpeak {
         return user;
     }
 
+    visualize(user) {
+        this.users.forEach(u => this.resetIntervalListeners(u));
+
+        let canvas = document.querySelector('.voice-visualizer');
+        let ctx = canvas.getContext('2d');
+
+        let onResize = () => {
+            let { offsetWidth, offsetHeight } = canvas;
+            canvas.width = offsetWidth;
+            canvas.height = offsetHeight;
+        }
+
+        window.addEventListener('resize', () => onResize());
+        onResize();
+
+        user.onInterval.push(data => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(0, data[0]);
+            for (let i = 1; i < data.length; i++) {
+                ctx.lineTo(i, data[i]);
+            }
+            ctx.stroke();
+        });
+    }
+
+    handleBubble(user) {
+        user.onInterval.push(data => {
+            let [min, max] = this.domain(data);
+            let volume = max - min;
+            if (volume > 1)
+                this.activateBubble(user, user.intervalTime);
+        });
+    }
+
+    resetIntervalListeners(user) {
+        user.onInterval = [];
+        this.handleBubble(user);
+    }
+
     handleStream(user, isLocalStream = false) {
         let stream = user.stream;
 
@@ -128,15 +171,15 @@ class TeamSpeak {
         var dataArray = new Uint8Array(bufferLength);
         analyser.getByteTimeDomainData(dataArray);
 
-        let intervalTime = 1000 / 5;
-        user.interval = setInterval(() => {
+        let loop = () => {
             analyser.getByteTimeDomainData(dataArray);
-            user.audioData = dataArray;
-            let [min, max] = this.domain(dataArray);
-            let volume = max - min;
-            if (volume > 1)
-                this.activateBubble(user, intervalTime);
-        }, intervalTime);
+            user.onInterval.forEach(cb => cb(dataArray));
+
+            user.interval = requestAnimationFrame(loop);
+        }
+        loop();
+
+        this.handleBubble(user);
     }
 
     activateBubble(user, duration = 100) {
