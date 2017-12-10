@@ -18,14 +18,15 @@ class TeamSpeak {
         }
         this.events = {};
         this.users = [];
+        console.log('RTC connection destroy call');
         this.connection.destroy();
         this.connection = [];
     }
 
     async initializeConnection() {
-        let stream = await this.getAudioStream();
+        this.stream = await this.getAudioStream();
 
-        this.connection = new RTCConnection(this.room, this.ip, stream ? { stream: stream } : {});
+        this.connection = new RTCConnection(this.room, this.ip, this.stream ? { stream: this.stream } : {});
 
         let sayAllowed = false;
         setTimeout(() => {
@@ -35,7 +36,7 @@ class TeamSpeak {
         this.connection.on('signalServerConnect', () => {
             let user = this.addUser('me');
             user.name = this.username;
-            user.stream = stream;
+            user.stream = this.stream;
             this.handleStream(user, true);
             this.updateUserList();
             this.say('Connected!');
@@ -54,8 +55,11 @@ class TeamSpeak {
             this.connection.send(peer, 'username', this.username);
         });
         this.connection.on('peerDisconnect', peer => {
-            let username = this.getUser(peer._id).name;
-            this.say(username + ' disconnected');
+            console.log('peer disconnect call');
+            let user = this.getUser(peer._id);
+            if (user) {
+                this.say(user.name + ' disconnected');
+            }
             let userIndex = this.users.findIndex(u => u.id === peer._id);
             this.users.splice(userIndex, 1);
             this.updateUserList();
@@ -78,6 +82,38 @@ class TeamSpeak {
             user.stream = stream;
             this.handleStream(user);
         });
+    }
+
+    toggleMicrophone() {
+        if (this.stream.getAudioTracks()[0].enabled)
+            this.muteMicrophone();
+        else
+            this.unmuteMicrophone();
+    }
+
+    muteMicrophone() {
+        this.stream.getAudioTracks()[0].enabled = false;
+    }
+
+    unmuteMicrophone() {
+        this.stream.getAudioTracks()[0].enabled = true
+    }
+
+    toggleSpeakers() {
+        if (this.isMuted)
+            this.unmuteSpeakers();
+        else
+            this.muteSpeakers();
+    }
+
+    muteSpeakers() {
+        this.isMuted = true;
+        this.users.forEach(u => u.gainNode.gain.value = 0);
+    }
+
+    unmuteSpeakers() {
+        this.isMuted = false;
+        this.users.forEach(u => u.gainNode.gain.value = u.gainNode.gain.defaultValue);
     }
 
     async sendMessage(message) {
@@ -159,12 +195,17 @@ class TeamSpeak {
         element.style.display = 'none';
         document.body.appendChild(element);
 
-        var gainNode = this.audioContext.createGain();
+        user.gainNode = this.audioContext.createGain();
         var analyser = this.audioContext.createAnalyser();
         var source = this.audioContext.createMediaStreamSource(stream);
         source.connect(analyser);
-        if (isLocalStream)
-            analyser.connect(this.audioContext.destination);
+        // analyser.connect(this.audioContext.destination);
+        if (!isLocalStream) {
+            analyser.connect(user.gainNode);
+            user.gainNode.connect(this.audioContext.destination);
+        }
+        if (this.isMuted)
+            this.muteSpeakers();
 
         analyser.fftSize = 2048;
         var bufferLength = analyser.frequencyBinCount;
@@ -209,8 +250,15 @@ class TeamSpeak {
     }
 
     say(message) {
-        let utterance = new SpeechSynthesisUtterance(message);
-        speechSynthesis.speak(utterance);
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+            setTimeout(() => {
+                this.say(message);
+            }, 50);
+        } else {
+            let utterance = new SpeechSynthesisUtterance(message);
+            speechSynthesis.speak(utterance);
+        }
     }
 
     updateUserList() {

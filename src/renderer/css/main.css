@@ -72,7 +72,9 @@ body {
     background-color: var(--panel-color);
 }
 
-.disconnect-button {
+.disconnect-button,
+.speakers-toggle,
+.microphone-toggle {
     display: none;
 }
 

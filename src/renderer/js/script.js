@@ -57,6 +57,14 @@ async function cancelConnect(icon) {
     stopIconSpin(icon);
 }
 
+function toggleMicrophone() {
+    window.ts.toggleMicrophone();
+}
+
+function toggleSpeakers() {
+    window.ts.toggleSpeakers();
+}
+
 async function connect() {
     let ip = await Dialog.prompt('Server IP', Store.settings.ip || 'https://rtc.ruurdbijlsma.com');
     Store.settings.ip = ip;
@@ -113,20 +121,34 @@ function onConnect() {
     let disconnectButton = document.querySelector('.disconnect-button');
     let connectButton = document.querySelector('.connect-button');
     let quickConnectButton = document.querySelector('.quick-connect-button');
+    let microphoneButton = document.querySelector('.microphone-toggle');
+    let speakersButton = document.querySelector('.speakers-toggle');
+
     connectButton.style.display = 'none';
     quickConnectButton.style.display = 'none';
     disconnectButton.style.display = 'inline-block';
+    microphoneButton.style.display = 'inline-block';
+    speakersButton.style.display = 'inline-block';
 }
 
 function onDisconnect() {
-    ts.destroy();
-
     let disconnectButton = document.querySelector('.disconnect-button');
     let connectButton = document.querySelector('.connect-button');
     let quickConnectButton = document.querySelector('.quick-connect-button');
+    let microphoneButton = document.querySelector('.microphone-toggle');
+    let speakersButton = document.querySelector('.speakers-toggle');
+
     connectButton.style.display = 'inline-block';
     quickConnectButton.style.display = 'inline-block';
     disconnectButton.style.display = 'none';
+    microphoneButton.style.display = 'none';
+    speakersButton.style.display = 'none';
+
+    if (ts.isMuted) {
+        speakersButton.click();
+    }
+
+    ts.destroy();
 
     let userList = document.querySelector('.user-list');
     while (userList.hasChildNodes())
@@ -168,7 +190,6 @@ function initializeIconToggles() {
 
         button.addEventListener('click', e => {
             let [activeIcon, inactiveIcon] = getActiveIcon(icons);
-            console.log(activeIcon.getAttribute('active'), inactiveIcon.getAttribute('active'));
             activeIcon.removeAttribute('active');
             inactiveIcon.setAttribute('active', '');
             inactiveIcon.style.display = activeDisplay;

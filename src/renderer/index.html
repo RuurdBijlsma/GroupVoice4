@@ -60,11 +60,12 @@
         <button title="Preferences" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
             <i class="fa fa-cog"></i>
         </button>
-        <button icon-toggle title="Toggle mute speakers" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+        <button icon-toggle title="Toggle mute speakers" class="mdc-button mdc-ripple-upgraded speakers-toggle" data-mdc-auto-init="MDCRipple" onclick="toggleSpeakers()">
             <i class="fa fa-volume-up"></i>
             <i active class="fa fa-volume-off"></i>
         </button>
-        <button icon-toggle title="Toggle mute microphone" class="mdc-button mdc-ripple-upgraded" data-mdc-auto-init="MDCRipple">
+        <button icon-toggle title="Toggle mute microphone" class="mdc-button mdc-ripple-upgraded microphone-toggle" data-mdc-auto-init="MDCRipple"
+            onclick="toggleMicrophone()">
             <i class="fa fa-microphone"></i>
             <i active class="fa fa-microphone-slash"></i>
         </button>
