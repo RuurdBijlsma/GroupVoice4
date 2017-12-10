@@ -1,4 +1,4 @@
-class TeamSpeak {
+class GroupVoice {
     constructor(ip, room, username) {
         this.ip = ip;
         this.room = room;

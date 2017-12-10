@@ -79,7 +79,7 @@ async function connect() {
     button.onclick = () => cancelConnect(icon);
     spinIcon(icon);
 
-    await createTeamSpeak(ip, room, username);
+    await createGroupVoice(ip, room, username);
 
     stopIconSpin(icon);
     button.onclick = () => quickConnect();
@@ -99,15 +99,15 @@ async function quickConnect() {
     button.onclick = () => cancelConnect(icon);
     spinIcon(icon);
 
-    await createTeamSpeak(ip, room, username);
+    await createGroupVoice(ip, room, username);
 
     stopIconSpin(icon);
     button.onclick = () => quickConnect();
 }
 
-function createTeamSpeak(ip, room, username) {
+function createGroupVoice(ip, room, username) {
     return new Promise(resolve => {
-        let ts = new TeamSpeak(ip, room, username);
+        let ts = new GroupVoice(ip, room, username);
 
         ts.on("message", (username, message) => ChatPanel.showMessage(username, message));
         ts.on("connect", () => { resolve(); onConnect(); });
