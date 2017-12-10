@@ -1,1 +1,0 @@
-start npm run package-win
